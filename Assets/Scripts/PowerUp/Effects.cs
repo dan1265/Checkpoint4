@@ -9,6 +9,7 @@ public class Effects : MonoBehaviour
     {
         Thunder,
         Invisible,
+        Rock,
     }
     public EffectType effectType;
     void Start()
@@ -39,6 +40,9 @@ public class Effects : MonoBehaviour
                 break;
             case EffectType.Invisible:
                 playerEffects.InvisibleEffect();
+                break;
+            case EffectType.Rock:
+                playerEffects.RockEffect();
                 break;
         }
 

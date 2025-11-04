@@ -10,12 +10,14 @@ public class PlayerEffects : MonoBehaviour
     public Material baseMaterial;
     public Material thunderMaterial;
     public Material invisibleMaterial;
+    public Material rockMaterial;
 
     private PlayerMovement playerMovement;
 
     [Header("Player Movement")]
     [SerializeField] private PlayerStatsPreset playerBaseStats;
     [SerializeField] private PlayerStatsPreset playerThunderStats;
+    [SerializeField] private PlayerStatsPreset playerRockStats;
 
     [Header("Effect Duration")]
     private Coroutine currentEffectCoroutine;
@@ -24,6 +26,7 @@ public class PlayerEffects : MonoBehaviour
     [Header("Plarticles")]
     [SerializeField] private ParticleSystem thunderParticles;
     [SerializeField] private ParticleSystem invisibleParticles;
+    [SerializeField] private ParticleSystem rockParticles;
 
     private void Awake()
     {
@@ -65,6 +68,8 @@ public class PlayerEffects : MonoBehaviour
     public void ResetEffects()
     {
         thunderParticles.Stop();
+        invisibleParticles.Stop();
+        rockParticles.Stop();
     }
 
     public void ThunderEffect()
@@ -85,6 +90,18 @@ public class PlayerEffects : MonoBehaviour
         SetMaterial(invisibleMaterial);
         ChangeSpeed(playerBaseStats);
         invisibleParticles.Play();
+        if (currentEffectCoroutine != null)
+        {
+            StopCoroutine(currentEffectCoroutine);
+        }
+        currentEffectCoroutine = StartCoroutine(ReturnToBaseState());
+    }
+
+    public void RockEffect()
+    {
+        SetMaterial(rockMaterial);
+        ChangeSpeed(playerRockStats);
+        rockParticles.Play();
         if (currentEffectCoroutine != null)
         {
             StopCoroutine(currentEffectCoroutine);
