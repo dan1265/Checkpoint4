@@ -4,7 +4,13 @@ using static UnityEngine.ParticleSystem;
 public class Effects : MonoBehaviour
 {
     public PlayerEffects playerEffects;
+    public SpawnEffect spawnEffect;
 
+    public float rotationForce = 5f;
+    public float frequency = 1f;
+    public Vector3 rotationDirection = Vector3.forward;
+
+    private Rigidbody rb;
     public enum EffectType
     {
         Thunder,
@@ -14,13 +20,18 @@ public class Effects : MonoBehaviour
     public EffectType effectType;
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        spawnEffect = transform.parent.GetComponent<SpawnEffect>();
         playerEffects = FindFirstObjectByType<PlayerEffects>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        float applyTorque = Mathf.Sin(Time.time * frequency) * rotationForce;
+
+        Vector3 torque = rotationDirection * applyTorque;
+
+        rb.AddTorque(torque, ForceMode.Force);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,6 +39,7 @@ public class Effects : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             PlayEffect();
+            spawnEffect.Spawn();
             Destroy(gameObject);
         }
     }

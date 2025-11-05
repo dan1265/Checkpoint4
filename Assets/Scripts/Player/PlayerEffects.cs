@@ -62,6 +62,7 @@ public class PlayerEffects : MonoBehaviour
     {
         SetMaterial(baseMaterial);
         ChangeSpeed(playerBaseStats);
+        StartCoroutine(ChangeScale(playerBaseStats.Scale));
         ResetEffects();
     }
 
@@ -76,12 +77,13 @@ public class PlayerEffects : MonoBehaviour
     {
         SetMaterial(thunderMaterial);
         ChangeSpeed(playerThunderStats);
-        thunderParticles.Play();
         if (currentEffectCoroutine != null)
         {
-            StopCoroutine(currentEffectCoroutine);
+            StopAllCoroutines();
+            ResetEffects();
         }
-
+        thunderParticles.Play();
+        StartCoroutine(ChangeScale(playerThunderStats.Scale));
         currentEffectCoroutine = StartCoroutine(ReturnToBaseState());
     }
 
@@ -89,11 +91,13 @@ public class PlayerEffects : MonoBehaviour
     {
         SetMaterial(invisibleMaterial);
         ChangeSpeed(playerBaseStats);
-        invisibleParticles.Play();
         if (currentEffectCoroutine != null)
         {
-            StopCoroutine(currentEffectCoroutine);
+            StopAllCoroutines();
+            ResetEffects();
         }
+        invisibleParticles.Play();
+        StartCoroutine(ChangeScale(playerBaseStats.Scale));
         currentEffectCoroutine = StartCoroutine(ReturnToBaseState());
     }
 
@@ -101,11 +105,27 @@ public class PlayerEffects : MonoBehaviour
     {
         SetMaterial(rockMaterial);
         ChangeSpeed(playerRockStats);
-        rockParticles.Play();
         if (currentEffectCoroutine != null)
         {
-            StopCoroutine(currentEffectCoroutine);
+            StopAllCoroutines();
+            ResetEffects();
         }
+        rockParticles.Play();
+        StartCoroutine(ChangeScale(playerRockStats.Scale));
         currentEffectCoroutine = StartCoroutine(ReturnToBaseState());
+    }
+
+    IEnumerator ChangeScale(Vector3 scale)
+    {
+        float elapsedTime = 0f;
+        float duration = 0.7f;
+        Vector3 startingScale = transform.localScale;
+        while (elapsedTime < duration)
+        {
+            transform.localScale = Vector3.Lerp(startingScale, scale, (elapsedTime / duration));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.localScale = scale;
     }
 }
